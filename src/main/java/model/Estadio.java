@@ -2,7 +2,6 @@ package model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +21,6 @@ public class Estadio {
     @NotEmpty
     private String cidade;
 
-    @NotNull
-    private Integer capacidade;
+
 
 }

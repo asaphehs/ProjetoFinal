@@ -4,13 +4,13 @@ import dto.ClubeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import service.ClubeService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/clubes")
@@ -69,8 +69,7 @@ public class ClubeController {
 
     //5. Listar Clubes
     @GetMapping
-    public ResponseEntity<List<ClubeDTO>> listarClubes(){
-        List<ClubeDTO> clubes = clubeService.listarClubes();
-        return ResponseEntity.ok(clubes);
+    public Page<ClubeDTO> listarClubes(Pageable pageable){
+        return clubeService.listarClubes(pageable);
     }
 }

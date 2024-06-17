@@ -4,11 +4,10 @@ import dto.ClubeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import model.Clube;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import repository.ClubeRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ClubeService {
@@ -80,10 +79,8 @@ public class ClubeService {
         return entityToDto(clube);
     }
 
-    public List<ClubeDTO> listarClubes() {
-        return clubeRepository.findAll()
-                .stream()
-                .map(this::entityToDto)
-                .collect(Collectors.toList());
+
+    public Page<ClubeDTO> listarClubes(Pageable pageable) {
+        return clubeRepository.findAll(pageable).map(this::entityToDto);
     }
 }
