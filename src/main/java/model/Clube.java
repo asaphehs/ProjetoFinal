@@ -19,6 +19,7 @@ public class Clube {
 
     @Id //Define PK do BD
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Gera auto o val do ID
+    @Column(nullable = false, updatable = false)
     private Long id;
 
     @NotBlank(message = "Nome é obrigatório")
