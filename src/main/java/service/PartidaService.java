@@ -17,6 +17,7 @@ import repository.PartidaRepository;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PartidaService {
@@ -165,40 +166,65 @@ public class PartidaService {
 
     //BUSCAS AVANÇADAS
     //Metodo dos confrontos diretos
-    public ConfrontoDiretoDTO getConfrontosDiretos(Long clube1Id, Long clube2Id) {
+    public ConfrontoDiretoDTO getConfrontosDiretos(Long clube1Id, Long clube2Id, Boolean goleadas) {
         Clube clube1 = clubeRepository.findById(clube1Id)
                 .orElseThrow(() -> new EntityNotFoundException("Clube 1 não encontrado"));
         Clube clube2 = clubeRepository.findById(clube2Id)
                 .orElseThrow(() -> new EntityNotFoundException("Clube 2 não encontrado"));
 
-        List<Partida> partidas = partidaRepository.findConfrontosDiretos(clube1, clube2);
+        List<Partida> partidas = partidaRepository.findByClubeMandanteAndClubeVisitanteOrClubeVisitanteAndClubeMandante(clube1, clube2);
 
-        int vitoriasClube1 = 0, empates = 0, derrotasClube1 = 0, golsClube1 = 0, golsClube2 = 0;
+        if (goleadas != null && goleadas) {
+            partidas = partidas.stream()
+                    .filter(partida -> Math.abs(partida.getGolsMandante() - partida.getGolsVisitante()) >= 3)
+                    .collect(Collectors.toList());
+        }
+
+        return calcularConfrontoDireto(partidas, clube1Id, clube2Id);
+    }
+
+    private ConfrontoDiretoDTO calcularConfrontoDireto(List<Partida> partidas, Long clube1Id, Long clube2Id) {
+        int vitoriasClube1 = 0;
+        int derrotasClube1 = 0;
+        int empates = 0;
+        int golsClube1 = 0;
+        int golsClube2 = 0;
 
         for (Partida partida : partidas) {
-            if (partida.getClubeMandante().equals(clube1)) {
-                golsClube1 += partida.getGolsMandante();
-                golsClube2 += partida.getGolsVisitante();
-                if (partida.getGolsMandante() > partida.getGolsVisitante()) {
+            int golsMandante = partida.getGolsMandante();
+            int golsVisitante = partida.getGolsVisitante();
+            Long mandanteId = partida.getClubeMandante().getId();
+            Long visitanteId = partida.getClubeVisitante().getId();
+
+            if (golsMandante > golsVisitante) {
+                if (mandanteId.equals(clube1Id)) {
                     vitoriasClube1++;
-                } else if (partida.getGolsMandante() < partida.getGolsVisitante()) {
-                    derrotasClube1++;
                 } else {
-                    empates++;
+                    derrotasClube1++;
+                }
+            } else if (golsMandante < golsVisitante) {
+                if (visitanteId.equals(clube1Id)) {
+                    vitoriasClube1++;
+                } else {
+                    derrotasClube1++;
                 }
             } else {
-                golsClube1 += partida.getGolsVisitante();
-                golsClube2 += partida.getGolsMandante();
-                if (partida.getGolsVisitante() > partida.getGolsMandante()) {
-                    vitoriasClube1++;
-                } else if (partida.getGolsVisitante() < partida.getGolsMandante()) {
-                    derrotasClube1++;
-                } else {
-                    empates++;
-                }
+                empates++;
             }
+
+            golsClube1 += mandanteId.equals(clube1Id) ? golsMandante : visitanteId.equals(clube1Id) ? golsVisitante : 0;
+            golsClube2 += mandanteId.equals(clube2Id) ? golsMandante : visitanteId.equals(clube2Id) ? golsVisitante : 0;
         }
-        return new ConfrontoDiretoDTO(partidas, vitoriasClube1, empates, derrotasClube1, golsClube1, golsClube2);
+
+        ConfrontoDiretoDTO confrontoDiretoDTO = new ConfrontoDiretoDTO();
+        confrontoDiretoDTO.setPartidas(partidas);
+        confrontoDiretoDTO.setVitoriasClube1(vitoriasClube1);
+        confrontoDiretoDTO.setEmpates(empates);
+        confrontoDiretoDTO.setDerrotasClube1(derrotasClube1);
+        confrontoDiretoDTO.setGolsClube1(golsClube1);
+        confrontoDiretoDTO.setGolsClube2(golsClube2);
+
+        return confrontoDiretoDTO;
     }
 
     //FILTROS AVANÇADOS

@@ -65,15 +65,7 @@ public class PartidaController {
             @RequestParam(required = false) Boolean goleadas) {
 
         try {
-            ConfrontoDiretoDTO confrontoDireto = partidaService.getConfrontosDiretos(clube1Id, clube2Id);
-
-            if (goleadas != null && goleadas) {
-                confrontoDireto.setPartidas(
-                        confrontoDireto.getPartidas().stream()
-                                .filter(partida -> Math.abs(partida.getGolsMandante() - partida.getGolsVisitante()) >= 3)
-                                .collect(Collectors.toList()));
-            }
-
+            ConfrontoDiretoDTO confrontoDireto = partidaService.getConfrontosDiretos(clube1Id, clube2Id, goleadas);
             return ResponseEntity.ok(confrontoDireto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

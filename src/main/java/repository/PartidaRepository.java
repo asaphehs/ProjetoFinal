@@ -18,7 +18,12 @@ public interface PartidaRepository extends JpaRepository<Partida, Long> {
     List<Partida> findByClubeVisitante(Clube clubeVisitante);
 
     @Query("SELECT p FROM Partida p WHERE (p.clubeMandante = :clube1 AND p.clubeVisitante = :clube2) OR (p.clubeMandante = :clube2 AND p.clubeVisitante = :clube1)")
-    List<Partida> findConfrontosDiretos(@Param("clube1") Clube clube1, @Param("clube2") Clube clube2);
+    List<Partida> findByClubeMandanteAndClubeVisitanteOrClubeVisitanteAndClubeMandante(
+            @Param("clube1") Clube clube1,
+            @Param("clube2") Clube clube2
+    );
+
+
 
     @Query("SELECT COUNT(p) FROM Partida p WHERE p.clubeMandante = :clube OR p.clubeVisitante = :clube")
     int contarPartidasPorClube(@Param("clube") Clube clube);
