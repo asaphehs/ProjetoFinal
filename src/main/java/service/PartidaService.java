@@ -200,4 +200,17 @@ public class PartidaService {
         }
         return new ConfrontoDiretoDTO(partidas, vitoriasClube1, empates, derrotasClube1, golsClube1, golsClube2);
     }
+
+    //FILTROS AVANÇADOS
+    public List<Partida> encontrarPartidasComGoleada() {
+        return partidaRepository.encontrarPartidasComGoleada();
+    }
+
+    public List<Partida> encontrarPartidasComoMandante(Clube clube) {
+        return partidaRepository.encontrarPartidasComoMandante(clube);
+    }
+
+    public List<Partida> encontrarPartidasComoVisitante(Clube clube) {
+        return partidaRepository.encontrarPartidasComoVisitante(clube);
+    }
 }

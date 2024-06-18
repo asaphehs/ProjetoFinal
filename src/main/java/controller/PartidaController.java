@@ -4,6 +4,8 @@ import dto.ConfrontoDiretoDTO;
 import dto.PartidaDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import model.Clube;
+import model.Partida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.PartidaService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -75,5 +78,28 @@ public class PartidaController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    //FILTROS AVANÇADOS
+    @GetMapping("/goleadas")
+    public ResponseEntity<List<Partida>> encontrarPartidasComGoleada() {
+        List<Partida> partidas = partidaService.encontrarPartidasComGoleada();
+        return ResponseEntity.ok(partidas);
+    }
+
+    @GetMapping("/mandantes/{clubeId}")
+    public ResponseEntity<List<Partida>> encontrarPartidasComoMandante(@PathVariable Long clubeId) {
+        Clube clube = new Clube();
+        clube.setId(clubeId);
+        List<Partida> partidas = partidaService.encontrarPartidasComoMandante(clube);
+        return ResponseEntity.ok(partidas);
+    }
+
+    @GetMapping("/visitantes/{clubeId}")
+    public ResponseEntity<List<Partida>> encontrarPartidasComoVisitante(@PathVariable Long clubeId) {
+        Clube clube = new Clube();
+        clube.setId(clubeId);
+        List<Partida> partidas = partidaService.encontrarPartidasComoVisitante(clube);
+        return ResponseEntity.ok(partidas);
     }
 }

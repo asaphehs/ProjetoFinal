@@ -40,4 +40,13 @@ public interface PartidaRepository extends JpaRepository<Partida, Long> {
 
     @Query("SELECT p FROM Partida p WHERE p.clubeMandante = :clube OR p.clubeVisitante = :clube")
     List<Partida> encontrarPartidasPorClube(@Param("clube") Clube clube);
+
+    @Query("SELECT p FROM Partida p WHERE ABS(p.golsMandante - p.golsVisitante) >= 3")
+    List<Partida> encontrarPartidasComGoleada();
+
+    @Query("SELECT p FROM Partida p WHERE p.clubeMandante = :clube AND (p.mandante = true OR p.visitante = true)")
+    List<Partida> encontrarPartidasComoMandante(@Param("clube") Clube clube);
+
+    @Query("SELECT p FROM Partida p WHERE p.clubeVisitante = :clube AND (p.mandante = true OR p.visitante = true)")
+    List<Partida> encontrarPartidasComoVisitante(@Param("clube") Clube clube);
 }
