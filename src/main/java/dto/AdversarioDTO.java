@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RetrospectoDTO {
+public class AdversarioDTO {
+    private Long id;
+    private String nome;
     private int vitorias;
     private int empates;
     private int derrotas;

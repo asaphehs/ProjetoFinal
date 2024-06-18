@@ -1,6 +1,8 @@
 package controller;
 
+import dto.ConfrontoDiretoDTO;
 import dto.PartidaDTO;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.PartidaService;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/partidas")
@@ -46,7 +50,30 @@ public class PartidaController {
 
     //10.Listar partidas
     @GetMapping
-    public Page<PartidaDTO> listarPartidas(Pageable pageable){
+    public Page<PartidaDTO> listarPartidas(Pageable pageable) {
         return partidaService.listarPartidas(pageable);
+    }
+
+    //BUSCAS AVANÇADAS
+    //3.Confrontos diretos
+    @GetMapping("/confrontos/{clube1Id}/{clube2Id}")
+    public ResponseEntity<ConfrontoDiretoDTO> getConfrontosdiretos(
+            @PathVariable Long clube1Id, @PathVariable Long clube2Id,
+            @RequestParam(required = false) Boolean goleadas) {
+
+        try {
+            ConfrontoDiretoDTO confrontoDireto = partidaService.getConfrontosDiretos(clube1Id, clube2Id);
+
+            if (goleadas != null && goleadas) {
+                confrontoDireto.setPartidas(
+                        confrontoDireto.getPartidas().stream()
+                                .filter(partida -> Math.abs(partida.getGolsMandante() - partida.getGolsVisitante()) >= 3)
+                                .collect(Collectors.toList()));
+            }
+
+            return ResponseEntity.ok(confrontoDireto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -1,6 +1,9 @@
 package controller;
 
 import dto.ClubeDTO;
+import dto.RankingDTO;
+import dto.RetrospectoContraAdversarioDTO;
+import dto.RetrospectoDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import service.ClubeService;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/clubes")
+@RequestMapping("/clubes")
 @Validated
 public class ClubeController {
 
@@ -52,24 +57,77 @@ public class ClubeController {
         try {
             clubeService.inativarClube(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     //4.Buscar Clube
     @GetMapping("/{id}")
-    public ResponseEntity<ClubeDTO> buscarClubePorId(@PathVariable Long id){
+    public ResponseEntity<ClubeDTO> buscarClubePorId(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(clubeService.buscarClubePorId(id));
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     //5. Listar Clubes
     @GetMapping
-    public Page<ClubeDTO> listarClubes(Pageable pageable){
+    public Page<ClubeDTO> listarClubes(Pageable pageable) {
         return clubeService.listarClubes(pageable);
     }
+
+    //BUSCAS AVANÇADAS
+
+    //1.Retrospecto geral
+    @GetMapping("/{id}/retrospecto")
+    public ResponseEntity<RetrospectoDTO> getRetrospecto(@PathVariable Long id) {
+        try {
+            RetrospectoDTO retrospecto = clubeService.getRetrospecto(id);
+            return ResponseEntity.ok(retrospecto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //2.Retrospecto clube contra adversarios
+    @GetMapping("/{id}/retrospecto/adversarios")
+    public ResponseEntity<RetrospectoContraAdversarioDTO> getRetrospectoContraAdversarios(@PathVariable Long id) {
+        try {
+            RetrospectoContraAdversarioDTO retrospecto = clubeService.getRetrospectoContraAdversarios(id);
+            return ResponseEntity.ok(retrospecto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //4.Ranking a
+    @GetMapping("/ranking/jogos")
+    public ResponseEntity<List<RankingDTO>> rankearClubesPorJogos() {
+        List<RankingDTO> ranking = clubeService.rankearClubesPorJogos();
+        return ResponseEntity.ok(ranking);
+    }
+
+    //4.Ranking b
+    @GetMapping("/ranking/jogos")
+    public ResponseEntity<List<RankingDTO>> rankearClubesPorVitorias() {
+        List<RankingDTO> ranking = clubeService.rankearClubesPorVitorias();
+        return ResponseEntity.ok(ranking);
+    }
+
+    //4.Ranking c
+    @GetMapping("/ranking/gols")
+    public ResponseEntity<List<RankingDTO>> rankearClubesPorGols() {
+        List<RankingDTO> ranking = clubeService.rankearClubesPorGols();
+        return ResponseEntity.ok(ranking);
+    }
+
+    //4.Ranking d
+    @GetMapping("/ranking/pontos")
+    public ResponseEntity<List<RankingDTO>> rankearClubesPorPontos() {
+        List<RankingDTO> ranking = clubeService.rankearClubesPorPontos();
+        return ResponseEntity.ok(ranking);
+    }
+
 }

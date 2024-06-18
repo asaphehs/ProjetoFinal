@@ -1,20 +1,20 @@
 package dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import model.Partida;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ConfrontoDiretoDTO {
-    private int vitoriasClube;
+    private List<Partida> partidas;
+    private int vitoriasClube1;
     private int empates;
-    private int derrotas;
-    private int golsFeitosClube;
-    private int golsSofridosClube;
-    private int vitoriasAdversario;
-    private int golsFeitosAdversario;
-    private int golsSofridosAdversario;
-    private List<Partida> partidas = new ArrayList<>();
+    private int derrotasClube1;
+    private int golsClube1;
+    private int golsClube2;
 }

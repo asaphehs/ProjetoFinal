@@ -1,5 +1,6 @@
 package service;
 
+import dto.ConfrontoDiretoDTO;
 import dto.PartidaDTO;
 import jakarta.persistence.EntityNotFoundException;
 import model.Clube;
@@ -162,5 +163,41 @@ public class PartidaService {
         return dto;
     }
 
+    //BUSCAS AVANÇADAS
+    //Metodo dos confrontos diretos
+    public ConfrontoDiretoDTO getConfrontosDiretos(Long clube1Id, Long clube2Id) {
+        Clube clube1 = clubeRepository.findById(clube1Id)
+                .orElseThrow(() -> new EntityNotFoundException("Clube 1 não encontrado"));
+        Clube clube2 = clubeRepository.findById(clube2Id)
+                .orElseThrow(() -> new EntityNotFoundException("Clube 2 não encontrado"));
 
+        List<Partida> partidas = partidaRepository.findConfrontosDiretos(clube1, clube2);
+
+        int vitoriasClube1 = 0, empates = 0, derrotasClube1 = 0, golsClube1 = 0, golsClube2 = 0;
+
+        for (Partida partida : partidas) {
+            if (partida.getClubeMandante().equals(clube1)) {
+                golsClube1 += partida.getGolsMandante();
+                golsClube2 += partida.getGolsVisitante();
+                if (partida.getGolsMandante() > partida.getGolsVisitante()) {
+                    vitoriasClube1++;
+                } else if (partida.getGolsMandante() < partida.getGolsVisitante()) {
+                    derrotasClube1++;
+                } else {
+                    empates++;
+                }
+            } else {
+                golsClube1 += partida.getGolsVisitante();
+                golsClube2 += partida.getGolsMandante();
+                if (partida.getGolsVisitante() > partida.getGolsMandante()) {
+                    vitoriasClube1++;
+                } else if (partida.getGolsVisitante() < partida.getGolsMandante()) {
+                    derrotasClube1++;
+                } else {
+                    empates++;
+                }
+            }
+        }
+        return new ConfrontoDiretoDTO(partidas, vitoriasClube1, empates, derrotasClube1, golsClube1, golsClube2);
+    }
 }
