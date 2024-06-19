@@ -1,19 +1,23 @@
-package controller;
+package com.asaphe.partidasfutebol.controller;
 
-import dto.ClubeDTO;
-import dto.RankingDTO;
-import dto.RetrospectoContraAdversarioDTO;
-import dto.RetrospectoDTO;
+import com.asaphe.partidasfutebol.dto.ClubeDTO;
+import com.asaphe.partidasfutebol.dto.RankingDTO;
+import com.asaphe.partidasfutebol.dto.RetrospectoContraAdversarioDTO;
+import com.asaphe.partidasfutebol.dto.RetrospectoDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import service.ClubeService;
+import com.asaphe.partidasfutebol.service.ClubeService;
 
 import java.util.List;
 
@@ -24,6 +28,9 @@ public class ClubeController {
 
     @Autowired
     private ClubeService clubeService;
+
+    @Autowired
+    private PagedResourcesAssembler<ClubeDTO> pagedResourcesAssembler;
 
     //1.Cadastrar Clube
     @PostMapping
@@ -74,8 +81,11 @@ public class ClubeController {
 
     //5. Listar Clubes
     @GetMapping
-    public Page<ClubeDTO> listarClubes(Pageable pageable) {
-        return clubeService.listarClubes(pageable);
+    public ResponseEntity<PagedModel<EntityModel<ClubeDTO>>> listarClubes(Pageable pageable) {
+        Page<ClubeDTO> clubesPage = clubeService.listarClubes(pageable);
+        org.springframework.hateoas.PagedModel<EntityModel<ClubeDTO>> pagedModel = pagedResourcesAssembler.toModel(clubesPage,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ClubeController.class).listarClubes(pageable)).withSelfRel());
+        return ResponseEntity.ok(pagedModel);
     }
 
     //BUSCAS AVANÇADAS
@@ -110,7 +120,7 @@ public class ClubeController {
     }
 
     //4.Ranking b
-    @GetMapping("/ranking/jogos")
+    @GetMapping("/ranking/vitorias")
     public ResponseEntity<List<RankingDTO>> rankearClubesPorVitorias() {
         List<RankingDTO> ranking = clubeService.rankearClubesPorVitorias();
         return ResponseEntity.ok(ranking);

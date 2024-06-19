@@ -1,7 +1,7 @@
-package repository;
+package com.asaphe.partidasfutebol.repository;
 
-import model.Clube;
-import model.Partida;
+import com.asaphe.partidasfutebol.model.Clube;
+import com.asaphe.partidasfutebol.model.Partida;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,6 +31,8 @@ public interface PartidaRepository extends JpaRepository<Partida, Long> {
     @Query("SELECT COUNT(p) FROM Partida p WHERE (p.clubeMandante = :clube AND p.golsMandante > p.golsVisitante) OR (p.clubeVisitante = :clube AND p.golsVisitante > p.golsMandante)")
     int contarVitoriasPorClube(@Param("clube") Clube clube);
 
+
+
     @Query("SELECT SUM(p.golsMandante) FROM Partida p WHERE p.clubeMandante = :clube")
     Integer somarGolsMandante(@Param("clube") Clube clube);
 
@@ -49,9 +51,11 @@ public interface PartidaRepository extends JpaRepository<Partida, Long> {
     @Query("SELECT p FROM Partida p WHERE ABS(p.golsMandante - p.golsVisitante) >= 3")
     List<Partida> encontrarPartidasComGoleada();
 
-    @Query("SELECT p FROM Partida p WHERE p.clubeMandante = :clube AND (p.mandante = true OR p.visitante = true)")
+    @Query("SELECT p FROM Partida p WHERE p.clubeMandante = :clube")
     List<Partida> encontrarPartidasComoMandante(@Param("clube") Clube clube);
 
-    @Query("SELECT p FROM Partida p WHERE p.clubeVisitante = :clube AND (p.mandante = true OR p.visitante = true)")
+    @Query("SELECT p FROM Partida p WHERE p.clubeVisitante = :clube ")
     List<Partida> encontrarPartidasComoVisitante(@Param("clube") Clube clube);
+
+
 }

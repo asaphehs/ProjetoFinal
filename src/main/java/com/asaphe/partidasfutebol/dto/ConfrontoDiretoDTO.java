@@ -1,9 +1,9 @@
-package dto;
+package com.asaphe.partidasfutebol.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.Partida;
+import com.asaphe.partidasfutebol.model.Partida;
 
 import java.util.List;
 

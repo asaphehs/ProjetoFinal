@@ -1,20 +1,20 @@
-package controller;
+package com.asaphe.partidasfutebol.controller;
 
-import dto.ConfrontoDiretoDTO;
-import dto.PartidaDTO;
+
+import com.asaphe.partidasfutebol.dto.ConfrontoDiretoDTO;
+import com.asaphe.partidasfutebol.dto.PartidaDTO;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import model.Clube;
-import model.Partida;
+import com.asaphe.partidasfutebol.model.Clube;
+import com.asaphe.partidasfutebol.model.Partida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.PartidaService;
+import com.asaphe.partidasfutebol.service.PartidaService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/partidas")
@@ -29,7 +29,6 @@ public class PartidaController {
         PartidaDTO novaPartida = partidaService.cadastrarPartida(partidaDTO);
         return ResponseEntity.status(201).body(novaPartida);
     }
-
     //7.Editar uma partida
     @PutMapping("/{id}")
     public ResponseEntity<PartidaDTO> atualizarPartida(@PathVariable Long id, @Valid @RequestBody PartidaDTO partidaDTO) {
@@ -94,4 +93,6 @@ public class PartidaController {
         List<Partida> partidas = partidaService.encontrarPartidasComoVisitante(clube);
         return ResponseEntity.ok(partidas);
     }
+
+
 }

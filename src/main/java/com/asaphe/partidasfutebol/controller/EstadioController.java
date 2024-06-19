@@ -1,13 +1,13 @@
-package controller;
+package com.asaphe.partidasfutebol.controller;
 
-import dto.EstadioDTO;
+import com.asaphe.partidasfutebol.dto.EstadioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.EstadioService;
+import com.asaphe.partidasfutebol.service.EstadioService;
 
 @RestController
 @RequestMapping("/estadios")
@@ -43,4 +43,6 @@ public class EstadioController {
         Page<EstadioDTO> estadios = estadioService.listarEstadios(pageable);
         return new ResponseEntity<>(estadios, HttpStatus.OK);
     }
+
+
 }

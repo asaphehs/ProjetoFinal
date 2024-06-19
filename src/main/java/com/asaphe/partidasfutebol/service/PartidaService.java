@@ -1,18 +1,18 @@
-package service;
+package com.asaphe.partidasfutebol.service;
 
-import dto.ConfrontoDiretoDTO;
-import dto.PartidaDTO;
+import com.asaphe.partidasfutebol.dto.ConfrontoDiretoDTO;
+import com.asaphe.partidasfutebol.dto.PartidaDTO;
+import com.asaphe.partidasfutebol.model.Clube;
+import com.asaphe.partidasfutebol.model.Estadio;
+import com.asaphe.partidasfutebol.model.Partida;
+import com.asaphe.partidasfutebol.repository.ClubeRepository;
+import com.asaphe.partidasfutebol.repository.EstadioRepository;
+import com.asaphe.partidasfutebol.repository.PartidaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import model.Clube;
-import model.Estadio;
-import model.Partida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import repository.ClubeRepository;
-import repository.EstadioRepository;
-import repository.PartidaRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -33,7 +33,7 @@ public class PartidaService {
 
     //Metodo cadastrar partida
     public PartidaDTO cadastrarPartida(PartidaDTO partidaDTO) {
-        validarDadosPartida(partidaDTO, false);
+        validarDadosPartida(partidaDTO);
 
         Partida partida = dtoToEntity(partidaDTO);
         Partida savedPartida = partidaRepository.save(partida);
@@ -63,7 +63,7 @@ public class PartidaService {
     }
 
 
-    private void validarDadosPartida(PartidaDTO partidaDTO, boolean isUpdate) {
+    private void validarDadosPartida(PartidaDTO partidaDTO) {
         //Verificar os clubes
         if (partidaDTO.getClubeMandanteId().equals(partidaDTO.getClubeVisitanteId())) {
             throw new IllegalArgumentException("Os clubes não podem ser iguais");
@@ -119,7 +119,7 @@ public class PartidaService {
 
     // Metodo para editar
     public PartidaDTO atualizarPartida(Long id, PartidaDTO partidaDTO) {
-        validarDadosPartida(partidaDTO, true);
+        validarDadosPartida(partidaDTO);
 
         Partida existingPartida = partidaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Partida não encontrada"));
@@ -148,6 +148,7 @@ public class PartidaService {
         return entityToDto(partida);
     }
 
+    //Metodo para listar partidas
     public Page<PartidaDTO> listarPartidas(Pageable pageable) {
         return partidaRepository.findAll(pageable).map(this::convertToDto);
     }
@@ -163,6 +164,7 @@ public class PartidaService {
         dto.setDataHora(partida.getDataHora());
         return dto;
     }
+
 
     //BUSCAS AVANÇADAS
     //Metodo dos confrontos diretos
@@ -239,4 +241,6 @@ public class PartidaService {
     public List<Partida> encontrarPartidasComoVisitante(Clube clube) {
         return partidaRepository.encontrarPartidasComoVisitante(clube);
     }
+
+
 }

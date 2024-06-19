@@ -1,13 +1,13 @@
-package service;
+package com.asaphe.partidasfutebol.service;
 
-import dto.EstadioDTO;
+import com.asaphe.partidasfutebol.dto.EstadioDTO;
+import com.asaphe.partidasfutebol.model.Estadio;
+import com.asaphe.partidasfutebol.repository.EstadioRepository;
 import jakarta.persistence.EntityNotFoundException;
-import model.Estadio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import repository.EstadioRepository;
 
 @Service
 public class EstadioService {
@@ -55,6 +55,7 @@ public class EstadioService {
 
     }
 
+
     //Metodo para editar estadio
     public EstadioDTO atualizarEstadio(Long id, EstadioDTO estadioDTO) {
         validarDadosEstadio(estadioDTO);
@@ -81,7 +82,10 @@ public class EstadioService {
         return entityToDto(estadio);
     }
 
+
     public Page<EstadioDTO> listarEstadios(Pageable pageable) {
         return estadioRepository.findAll(pageable).map(this::entityToDto);
     }
+
+
 }

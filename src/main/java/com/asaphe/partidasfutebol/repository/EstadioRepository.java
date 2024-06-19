@@ -1,6 +1,6 @@
-package repository;
+package com.asaphe.partidasfutebol.repository;
 
-import model.Estadio;
+import com.asaphe.partidasfutebol.model.Estadio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

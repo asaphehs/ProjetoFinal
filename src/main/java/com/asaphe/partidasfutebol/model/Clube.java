@@ -1,4 +1,4 @@
-package model;
+package com.asaphe.partidasfutebol.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

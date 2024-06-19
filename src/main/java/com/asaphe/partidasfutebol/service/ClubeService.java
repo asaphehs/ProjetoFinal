@@ -1,15 +1,15 @@
-package service;
+package com.asaphe.partidasfutebol.service;
 
-import dto.*;
+import com.asaphe.partidasfutebol.dto.*;
+import com.asaphe.partidasfutebol.model.Clube;
+import com.asaphe.partidasfutebol.model.Partida;
+import com.asaphe.partidasfutebol.repository.ClubeRepository;
+import com.asaphe.partidasfutebol.repository.PartidaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import model.Clube;
-import model.Partida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import repository.ClubeRepository;
-import repository.PartidaRepository;
 
 import java.util.Comparator;
 import java.util.HashMap;

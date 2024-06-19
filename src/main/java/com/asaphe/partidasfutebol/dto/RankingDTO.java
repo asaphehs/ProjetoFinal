@@ -1,4 +1,4 @@
-package dto;
+package com.asaphe.partidasfutebol.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
